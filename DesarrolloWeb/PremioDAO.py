@@ -5,7 +5,7 @@ Patrón: clase concreta con Session inyectada (mismo estilo que VideoDAO.py).
 """
 
 from sqlalchemy.orm import Session
-from models import Premio, TipoPremio
+from models_sic import Premio, TipoPremio
 
 
 class PremioDAO:

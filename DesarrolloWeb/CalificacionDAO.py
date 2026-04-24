@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Calificacion, NivelCalificacion
+from models_sic import Calificacion, NivelCalificacion
  
  
 class CalificacionDAO:

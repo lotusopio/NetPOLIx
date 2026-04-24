@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS netpolix_sic
+CREATE DATABASE IF NOT EXISTS netpolix
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE netpolix_sic;
+USE netpolix;
 
 CREATE TABLE IF NOT EXISTS video (
     idvideo          INT          NOT NULL AUTO_INCREMENT,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS video (
 CREATE TABLE IF NOT EXISTS calificacion (
     idcalificacion  INT     NOT NULL AUTO_INCREMENT,
     idvideo         INT     NOT NULL,
-    nivel           ENUM('Excelente','Buena','Regular','Mala') NOT NULL,
+    nivel           ENUM('EXCELENTE','BUENA','REGULAR','MALA') NOT NULL,
     puntaje         FLOAT,                       -- valor opcional 1.0 – 5.0
     comentario      TEXT,
     fecha_creacion  DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS director (
 CREATE TABLE IF NOT EXISTS premio (
     idpremio        INT          NOT NULL AUTO_INCREMENT,
     nombre          VARCHAR(150) NOT NULL,
-    tipo            ENUM('Oscar','Globo de Oro','BAFTA','Emmy','Otro') DEFAULT 'Otro',
+    tipo            ENUM('OSCAR','GLOBO DE ORO','BAFTA','EMMY','OTRO') DEFAULT 'OTRO',
     categoria       VARCHAR(100),                -- ej. "Mejor Película"
     anio            INT,
     descripcion     TEXT,
@@ -104,19 +104,5 @@ CREATE TABLE IF NOT EXISTS video_director (
     CONSTRAINT fk_vd_director FOREIGN KEY (iddirector) REFERENCES director(iddirector) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- ─────────────────────────────────────────────────────────────
---  DATOS DE EJEMPLO (opcional — descomenta si los necesitas)
--- ─────────────────────────────────────────────────────────────
-
--- INSERT INTO genero (nombre, descripcion) VALUES
---     ('Acción',   'Películas con escenas de acción y adrenalina'),
---     ('Drama',    'Narrativas centradas en conflictos emocionales'),
---     ('Comedia',  'Contenido humorístico y entretenido'),
---     ('Terror',   'Películas de miedo y suspenso'),
---     ('Ciencia Ficción', 'Historias basadas en ciencia y tecnología futura');
-
--- INSERT INTO plataforma (nombre, url) VALUES
---     ('Netflix',  'https://www.netflix.com'),
---     ('HBO Max',  'https://www.hbomax.com'),
---     ('Disney+',  'https://www.disneyplus.com');
+CREATE DATABASE IF NOT EXISTS netpolix;
+USE netpolix;

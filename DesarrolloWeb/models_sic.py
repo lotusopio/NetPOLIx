@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 from datetime import datetime
 import enum
 
-DATABASE_URL = "mysql+mysqlconnector://root:@localhost:3307/netpolix_sic"
+DATABASE_URL = "mysql+mysqlconnector://root:@localhost:3307/netpolix"
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -24,18 +24,18 @@ Base = declarative_base()
 # ─────────────────────────────────────────────
 
 class NivelCalificacion(enum.Enum):
-    EXCELENTE = "Excelente"
-    BUENA     = "Buena"
-    REGULAR   = "Regular"
-    MALA      = "Mala"
+    EXCELENTE = "EXCELENTE"
+    BUENA     = "BUENA"
+    REGULAR   = "REGULAR"
+    MALA      = "MALA"
 
 
 class TipoPremio(enum.Enum):
-    OSCAR        = "Oscar"
-    GLOBO_DE_ORO = "Globo de Oro"
+    OSCAR        = "OSCAR"
+    GLOBO_DE_ORO = "GLOBO DE ORO"
     BAFTA        = "BAFTA"
-    EMMY         = "Emmy"
-    OTRO         = "Otro"
+    EMMY         = "EMMY"
+    OTRO         = "OTRO"
 
 
 # ─────────────────────────────────────────────
@@ -178,4 +178,4 @@ def init_db():
     NO al importar el módulo (evita crash si MySQL está apagado).
     """
     Base.metadata.create_all(engine)
-    print("✅ Tablas creadas/verificadas exitosamente")
+    print("Tablas creadas/verificadas exitosamente")

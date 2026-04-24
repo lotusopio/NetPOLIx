@@ -25,7 +25,9 @@ from PlataformaDAO import PlataformaDAO
 app = Flask(__name__)
 
 
-# ── Helpers ──────────────────────────────────────────────────────────────────
+def get_video_dao():
+    session = SessionLocal()
+    return VideoDAO(session), session
 
 def get_calificacion_dao():
     session = SessionLocal()
@@ -53,6 +55,92 @@ def error_response(mensaje: str, codigo: int = 400):
 def success_response(datos, codigo: int = 200):
     return jsonify(datos), codigo
 
+# ════════════════════════════════════════════════════════════════
+#  VIDEO
+# ════════════════════════════════════════════════════════════════
+
+@app.route('/videos', methods=['POST'])
+def crear_video():
+    try:
+        data = request.get_json()
+        if 'titulo' not in data:
+            return error_response("Campo requerido: titulo", 400)
+        dao, session = get_video_dao()
+        try:
+            v = dao.crear(titulo=data['titulo'],
+                          anio_produccion=data.get('anio_produccion'),
+                          duracion=data.get('duracion'),
+                          descripcion=data.get('descripcion'))
+            return success_response({'id': v.idvideo, 'titulo': v.titulo,
+                                     'anio_produccion': v.anio_produccion,
+                                     'duracion': v.duracion,
+                                     'mensaje': 'Video creado exitosamente'}, 201)
+        finally:
+            session.close()
+    except Exception as e:
+        return error_response(f"Error al crear video: {str(e)}", 500)
+
+@app.route('/videos', methods=['GET'])
+def obtener_videos():
+    try:
+        dao, session = get_video_dao()
+        try:
+            registros = dao.obtener_todos()
+            datos = [{'id': v.idvideo, 'titulo': v.titulo,
+                      'anio_produccion': v.anio_produccion,
+                      'duracion': v.duracion} for v in registros]
+            return success_response({'total': len(datos), 'videos': datos}, 200)
+        finally:
+            session.close()
+    except Exception as e:
+        return error_response(f"Error al obtener videos: {str(e)}", 500)
+
+@app.route('/videos/<int:video_id>', methods=['GET'])
+def obtener_video(video_id):
+    try:
+        dao, session = get_video_dao()
+        try:
+            v = dao.obtener_por_id(video_id)
+            if not v:
+                return error_response(f"No existe video con ID {video_id}", 404)
+            return success_response({'id': v.idvideo, 'titulo': v.titulo,
+                                     'anio_produccion': v.anio_produccion,
+                                     'duracion': v.duracion,
+                                     'descripcion': v.descripcion}, 200)
+        finally:
+            session.close()
+    except Exception as e:
+        return error_response(f"Error al obtener video: {str(e)}", 500)
+
+@app.route('/videos/<int:video_id>', methods=['PUT'])
+def actualizar_video(video_id):
+    try:
+        data = request.get_json()
+        dao, session = get_video_dao()
+        try:
+            v = dao.actualizar(video_id, **data)
+            return success_response({'id': v.idvideo, 'titulo': v.titulo,
+                                     'mensaje': 'Video actualizado exitosamente'}, 200)
+        finally:
+            session.close()
+    except ValueError as ve:
+        return error_response(str(ve), 404 if "No existe" in str(ve) else 400)
+    except Exception as e:
+        return error_response(f"Error al actualizar video: {str(e)}", 500)
+
+@app.route('/videos/<int:video_id>', methods=['DELETE'])
+def eliminar_video(video_id):
+    try:
+        dao, session = get_video_dao()
+        try:
+            if dao.eliminar(video_id):
+                return success_response({'id': video_id,
+                                         'mensaje': 'Video eliminado exitosamente'}, 200)
+            return error_response(f"No existe video con ID {video_id}", 404)
+        finally:
+            session.close()
+    except Exception as e:
+        return error_response(f"Error al eliminar video: {str(e)}", 500)
 
 # ════════════════════════════════════════════════════════════════
 #  CALIFICACION
